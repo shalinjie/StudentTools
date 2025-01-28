@@ -24,39 +24,39 @@ def get_font_path():
 
 # 生成“有的题型”题目
 def generate_custom_problem():
-    total_people = random.randint(5, 15)
-    target_person = random.randint(1, total_people)
-    front_people = random.randint(0, target_person - 1)
-    back_people = total_people - target_person - front_people
+    total_people = random.randint(5, 15)  # 总人数至少为5
+    target_person = random.randint(2, total_people - 1)  # 确保小明不在最前面或最后面
+    front_people = random.randint(1, max(1, target_person - 1))  # 前面至少有1人，确保范围有效
+    back_people = total_people - target_person  # 后面至少有1人
     problem = f"小明前面有{front_people}个小朋友，后面有{back_people}个小朋友"
     return problem
 
 
 # 生成“第的题型”题目
 def generate_order_custom_problem():
-    total_people = random.randint(5, 15)
-    front_order = random.randint(1, total_people - 1)
-    back_order = random.randint(1, total_people - front_order)
+    total_people = random.randint(5, 15)  # 总人数至少为5
+    front_order = random.randint(2, max(2, total_people - 1))  # 前面至少第2名，确保范围有效
+    back_order = random.randint(2, max(2, total_people - front_order))  # 后面至少第2名，确保范围有效
     problem = f"从前往后数小明前面第{front_order}个，从后往前数小明后面第{back_order}个"
     return problem
 
 
 # 生成混合题型1
 def generate_mixed_problem1():
-    total_people = random.randint(5, 15)
-    target_person = random.randint(1, total_people)
-    front_people = random.randint(0, target_person - 1)
-    back_order = random.randint(1, total_people - target_person)
+    total_people = random.randint(5, 15)  # 总人数至少为5
+    target_person = random.randint(2, total_people - 1)  # 确保小明不在最前面或最后面
+    front_people = random.randint(1, max(1, target_person - 1))  # 前面至少有1人，确保范围有效
+    back_order = random.randint(2, max(2, total_people - target_person))  # 后面至少第2名，确保范围有效
     problem = f"小明前面有{front_people}个小朋友，从后往前数小明是第{back_order}个"
     return problem
 
 
 # 生成混合题型2
 def generate_mixed_problem2():
-    total_people = random.randint(5, 15)
-    target_person = random.randint(1, total_people)
-    front_order = random.randint(1, target_person)
-    back_people = random.randint(0, total_people - target_person)
+    total_people = random.randint(5, 15)  # 总人数至少为5
+    target_person = random.randint(2, total_people - 1)  # 确保小明不在最前面或最后面
+    front_order = random.randint(2, max(2, target_person))  # 前面至少第2名，确保范围有效
+    back_people = random.randint(1, max(1, total_people - target_person))  # 后面至少有1人，确保范围有效
     problem = f"从前往后数小明是第{front_order}个，小明后面有{back_people}个小朋友"
     return problem
 
@@ -99,12 +99,6 @@ def main():
         print(e)
         return
 
-    # 标题
-    title = "排队问题"
-    title_bbox = draw.textbbox((0, 0), title, font=title_font)
-    title_width = title_bbox[2] - title_bbox[0]
-    draw.text((width / 2 - title_width / 2, 50), title, fill='black', font=title_font)
-
     # 让用户选择题型
     print("请选择题型：")
     print("1. 第的题型")
@@ -119,6 +113,20 @@ def main():
         print("无效选择，请输入1、2或3。")
         return
 
+    # 题型名称映射
+    problem_types = {
+        1: "第的题型",
+        2: "有的题型",
+        3: "混合题型"
+    }
+
+    # 标题
+    title = f"排队问题（{problem_types[choice]}）"
+    title_bbox = draw.textbbox((0, 0), title, font=title_font)
+    title_width = title_bbox[2] - title_bbox[0]
+    draw.text((width / 2 - title_width / 2, 50), title, fill='black', font=title_font)
+
+    # 题目生成器
     problem_generators = {
         1: generate_order_custom_problem,
         2: generate_custom_problem,
